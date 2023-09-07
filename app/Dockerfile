@@ -3,7 +3,7 @@ FROM python:3.11-slim AS builder
 WORKDIR /opt
 COPY requirements.txt .
 
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential python-dev python3-dev gcc musl-dev libc-dev \
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential python3-dev gcc musl-dev libc-dev \
      && pip install --upgrade pip \
      && pip3 install wheel && pip3 wheel -r requirements.txt --wheel-dir=/opt/wheels
 
@@ -12,8 +12,8 @@ FROM python:3.11-slim
 
 COPY --from=builder /opt /opt
 
-WORKDIR /opt/admin
-EXPOSE ${ADMIN_APP_PORT}
+WORKDIR /opt/app
+EXPOSE ${APP_PORT}
 ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
 
 COPY . .

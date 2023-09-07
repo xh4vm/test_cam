@@ -17,7 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'movies.apps.MoviesConfig',
+    'user.apps.UserConfig',
     'debug_toolbar',
     'corsheaders',
 ]
@@ -62,11 +62,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LOCALE_PATHS = ['movies/locale']
-
-LANGUAGE_CODE = 'ru-RU'
-# LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
@@ -88,7 +83,6 @@ LOGGING = {
     'loggers': {'django.db.backends': {'level': 'DEBUG', 'handlers': ['debug-console'], 'propagate': False, }},
 }
 
-
 def show_toolbar(request):
     return DEBUG is True
 
@@ -97,6 +91,5 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
     'SHOW_TOOLBAR_CALLBACK': show_toolbar,
 }
-
 
 APPEND_SLASH = False

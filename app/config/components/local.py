@@ -13,7 +13,19 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
 ]
 
+AUTH_USER_MODEL = "user.User"
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'config.paginators.DefaultPaginator',
     'PAGE_SIZE': 50,
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+JWT = {
+    'TOKEN_LIFETIME_HOURS': 5
 }
