@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "test_cam"
+version = "0.1.0"
+description = ""
+authors = ["xh4vm <h4vm@yandex.ru>"]
+readme = "README.md"
+packages = []
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.2.5"
+django-split-settings = "^1.2.0"
+djangorestframework = "^3.14.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
