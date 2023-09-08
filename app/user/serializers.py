@@ -1,5 +1,5 @@
 from user.models import User
-from rest_framework.serializers import ModelSerializer, Serializer, CharField
+from rest_framework.serializers import ModelSerializer
 
 
 class UserSerializer(ModelSerializer):
@@ -18,8 +18,3 @@ class UserSerializer(ModelSerializer):
             'email',
             'password',
         )
-
-
-class ObtainTokenSerializer(Serializer):
-    email = CharField()
-    password = CharField()
