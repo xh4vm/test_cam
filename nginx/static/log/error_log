@@ -407,3 +407,4 @@
 2023/09/07 13:13:05 [error] 22#22: *31 "/etc/nginx/html/index.html" is not found (2: No such file or directory), client: 104.152.52.222, server: _, request: "GET / HTTP/1.0"
 2023/09/07 13:28:21 [error] 23#23: *3 open() "/etc/nginx/html/favicon.ico" failed (2: No such file or directory), client: 172.20.0.1, server: _, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/api/v1/user/auth/token"
 2023/09/07 13:39:36 [error] 23#23: *26 open() "/etc/nginx/html/favicon.ico" failed (2: No such file or directory), client: 172.20.0.1, server: _, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/api/v1/user/auth/token"
+2023/09/08 02:35:08 [error] 22#22: *3 open() "/etc/nginx/html/favicon.ico" failed (2: No such file or directory), client: 172.18.0.1, server: _, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/api/v1/"
