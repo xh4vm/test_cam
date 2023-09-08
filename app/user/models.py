@@ -1,20 +1,7 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.sessions.models import Session
 from django.db import models
-
-
-class TimeStampMixin(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-
-class IDMixin(models.Model):
-    id = models.AutoField(primary_key=True)
-
-    class Meta:
-        abstract = True
+from config.models import IDMixin, TimeStampMixin
 
 
 class UserManager(BaseUserManager):
@@ -42,3 +29,12 @@ class User(IDMixin, TimeStampMixin, AbstractBaseUser):
     
     class Meta:
         db_table = 'user'
+
+
+class UserSession(Session):
+    # you can also add custom field if required like this user column which can be the FK to the user table 
+    user = models.ForeignKey('user', on_delete=models.CASCADE) 
+
+    class Meta:
+        app_label = "user"
+        db_table = "user_session"

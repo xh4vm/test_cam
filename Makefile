@@ -37,6 +37,9 @@ clean-all: clean-pyc clean-all-dockers
 .PHONY: django migrations
 migrate: poetry-install-build migrate-run 
 
+.PHONY: django makemigrations
+makemigrations: poetry-install-build makemigrations-run
+
 .PHONY: potery install build to venv
 poetry-install-build:
 	$(call log,Poetry installing packages)
@@ -60,6 +63,12 @@ clean-pyc:
 migrate-run:
 	$(call log,Run django migrations)
 	docker exec -it app python3 /opt/app/manage.py migrate
+
+.PHONY: run django makemigrations
+makemigrations-run:
+	$(call log,Run django migrations)
+	docker exec -it app python3 /opt/app/manage.py makemigrations
+
 
 .PHONY: clean all docker images
 clean-all-dockers:

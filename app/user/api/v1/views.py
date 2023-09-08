@@ -1,36 +1,34 @@
+import json
 from django.contrib.auth import authenticate, login, logout
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
 from rest_framework.views import APIView
-from user.models import User
 from user.serializers import UserSerializer
-
+from user.api.v1.responses import LoginResponse, LogoutResponse
 
 class RegistrationUserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = UserSerializer
 
 
-class AuthUserViewSet(APIView):
+class AuthUserView(APIView):
 
     def post(self, request):
 
-        if 'email' not in request.data or 'password' not in request.data:
-            return Response({'message': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
+        email = request.data.get('email')
+        password = request.data.get('password')
         
-        email = request.POST['email']
-        password = request.POST['password']
+        if email is None or password is None:
+            return Response({'message': LoginResponse.MISSING}, status=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
+            return Response({'message': LoginResponse.SUCCESS}, status=status.HTTP_200_OK)
 
-            return Response({'message': 'Login Success'}, status=status.HTTP_200_OK)
-
-        return Response({'message': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'message': LoginResponse.INVALID}, status=status.HTTP_401_UNAUTHORIZED)
 
     def delete(self, request):
 
         logout(request)
-        return Response({'message': 'Successfully Logged out'}, status=status.HTTP_200_OK)
+        return Response({'message': LogoutResponse.SUCCESS}, status=status.HTTP_200_OK)

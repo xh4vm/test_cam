@@ -26,6 +26,8 @@ REST_FRAMEWORK = {
     ],
 }
 
+SESSION_ENGINE = 'config.session'
+
 CSRF_COOKIE_SAMESITE = 'Strict'
 SESSION_COOKIE_SAMESITE = 'Strict'
 CSRF_COOKIE_HTTPONLY = False
