@@ -9,15 +9,10 @@ class SessionStore(DBStore):
         return user.models.UserSession
 
     def create_model_instance(self, data):
-        """
-        overriding the function to save the changes to db using `session["user_id"] = user.id` .
-        This will create the model instance with the custom field values. 
-        When you add more field to the custom session model you have to update the function 
-        to handle those fields as well.
-        """
-        obj = super().create_model_instance(data)
+        obj = super(SessionStore, self).create_model_instance(data)
+
         try:
-            user_id = data.get('user_id')
+            user_id = int(data.get('_auth_user_id'))
         except (ValueError, TypeError):
             user_id = None
 

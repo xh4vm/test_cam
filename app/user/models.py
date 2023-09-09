@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.sessions.models import Session
+from django.contrib.sessions.base_session import AbstractBaseSession
+from config.session import SessionStore
 from django.db import models
 from config.models import IDMixin, TimeStampMixin
 
@@ -31,10 +32,12 @@ class User(IDMixin, TimeStampMixin, AbstractBaseUser):
         db_table = 'user'
 
 
-class UserSession(Session):
-    # you can also add custom field if required like this user column which can be the FK to the user table 
-    user = models.ForeignKey('user', on_delete=models.CASCADE) 
+class UserSession(AbstractBaseSession):
+    user_id = models.IntegerField(null=True, db_index=True)
 
     class Meta:
-        app_label = "user"
         db_table = "user_session"
+
+    @classmethod
+    def get_session_store_class(cls):
+        return SessionStore
