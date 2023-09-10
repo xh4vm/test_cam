@@ -1,14 +1,11 @@
 from django.db import models
-from typing import Any
-from datetime import datetime
 from config.models import IDMixin, TimeStampMixin
 from frame.validators import video_color_schema_validator, frame_id_validator, cam_id_validator, channel_validator, config_validator
-from user.models import User
 
 
 class UserFrame(IDMixin, TimeStampMixin):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    frame_id = models.ForeignKey('Frame', on_delete=models.CASCADE)
+    user_id = models.IntegerField(null=False, blank=False)
+    frame_id = models.IntegerField(null=False, blank=False)
 
     def __str__(self) -> str:
         return str(self.id)

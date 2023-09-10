@@ -1,23 +1,50 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from loguru import logger
+
 from frame.serializers import FrameSerializer, FrameContributorSerializer
-from frame.models import Frame, UserFrame
-from user.models import User
+from frame.models import UserFrame
+from .responses import CreateVideoFrame
+from user.models import UserSession
 
 
 class VideoFrameView(APIView):
 
-    def put(self, request):
+    def post(self, request):
         frame_serializer = FrameSerializer(data=request.data)
         contributors_serializer = FrameContributorSerializer(data=request.data)
 
         if not frame_serializer.is_valid() or not contributors_serializer.is_valid():
-            return
+            logger.error(frame_serializer.errors + contributors_serializer.errors)
         
-        users = User.objects.filter(id__in=contributors_serializer.validated_data['contributors'])
+        user_sessions = (UserSession
+            .objects
+            .filter(user_id__in=contributors_serializer.validated_data['contributors']))
 
-        return Response({'message': '1'}, status=status.HTTP_201_CREATED)
+        if len(user_sessions) == 0:
+            return Response(
+                {'message': CreateVideoFrame.SUCCESS.substitute(count=len(user_sessions))},
+                status=status.HTTP_201_CREATED
+            )
+
+        frame = frame_serializer.save()
+
+        UserFrame.objects.bulk_create(
+            (UserFrame(user_id=session.user_id, frame_id=frame.id) for session in user_sessions)
+        )
+
+        return Response(
+            {'message': CreateVideoFrame.SUCCESS.substitute(count=len(user_sessions))},
+            status=status.HTTP_201_CREATED
+        )
+
+
+class UserVideoFrameView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        user_id = request.user.id
+
         return Response({'message': '1'}, status=status.HTTP_200_OK)
