@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from loguru import logger
 
+from config.paginators import DefaultPaginator
 from frame.serializers import FrameSerializer, FrameContributorSerializer
 from frame.models import UserFrame, Frame
 from .responses import CreateVideoFrame
@@ -41,13 +42,17 @@ class VideoFrameView(APIView):
         )
 
 
-class UserVideoFrameView(APIView):
+class UserVideoFrameView(APIView, DefaultPaginator):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user_id = request.user.id
 
-        frames = Frame.objects.filter(id__in=UserFrame.objects.filter(user_id=user_id)).all()
-        frame_serializer = FrameSerializer(frames, many=True)
+        frames = Frame.objects.filter(
+            id__in=UserFrame.objects.filter(user_id=user_id)
+        ).all()
 
-        return Response({'message': '1', 'frames': frame_serializer.data}, status=status.HTTP_200_OK)
+        paginated_frames = self.paginate_queryset(frames, request, view=self)
+        frame_serializer = FrameSerializer(paginated_frames, many=True)
+
+        return self.get_paginated_response({'frames': frame_serializer.data})
