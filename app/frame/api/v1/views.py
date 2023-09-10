@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from loguru import logger
 
 from frame.serializers import FrameSerializer, FrameContributorSerializer
-from frame.models import UserFrame
+from frame.models import UserFrame, Frame
 from .responses import CreateVideoFrame
 from user.models import UserSession
 
@@ -47,4 +47,7 @@ class UserVideoFrameView(APIView):
     def get(self, request):
         user_id = request.user.id
 
-        return Response({'message': '1'}, status=status.HTTP_200_OK)
+        frames = Frame.objects.filter(id__in=UserFrame.objects.filter(user_id=user_id)).all()
+        frame_serializer = FrameSerializer(frames, many=True)
+
+        return Response({'message': '1', 'frames': frame_serializer.data}, status=status.HTTP_200_OK)
