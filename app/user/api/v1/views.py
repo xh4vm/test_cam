@@ -1,16 +1,19 @@
-import json
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
 from rest_framework.views import APIView
 from user.serializers import UserSerializer
 from user.api.v1.responses import LoginResponse, LogoutResponse
+from config.permissions import UnauthenticatedPOST
+from rest_framework.permissions import IsAuthenticated
+
 
 class RegistrationUserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = UserSerializer
 
 
 class AuthUserView(APIView):
+    permission_classes = [IsAuthenticated | UnauthenticatedPOST]
 
     def post(self, request):
 

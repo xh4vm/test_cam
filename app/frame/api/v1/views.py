@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from loguru import logger
 
+from config.permissions import UnauthenticatedPOST
 from config.paginators import DefaultPaginator
 from frame.serializers import FrameSerializer, FrameContributorSerializer
 from frame.models import UserFrame, Frame
@@ -11,7 +12,8 @@ from .responses import CreateVideoFrame
 from user.models import UserSession
 
 
-class VideoFrameView(APIView):
+class VideoFrameView(APIView, DefaultPaginator):
+    permission_classes = [IsAuthenticated | UnauthenticatedPOST]
 
     def post(self, request):
         frame_serializer = FrameSerializer(data=request.data)
@@ -40,10 +42,6 @@ class VideoFrameView(APIView):
             {'message': CreateVideoFrame.SUCCESS.substitute(count=len(user_sessions))},
             status=status.HTTP_201_CREATED
         )
-
-
-class UserVideoFrameView(APIView, DefaultPaginator):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user_id = request.user.id
