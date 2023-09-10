@@ -55,4 +55,4 @@ class UserVideoFrameView(APIView, DefaultPaginator):
         paginated_frames = self.paginate_queryset(frames, request, view=self)
         frame_serializer = FrameSerializer(paginated_frames, many=True)
 
-        return self.get_paginated_response({'frames': frame_serializer.data})
+        return self.get_paginated_response(frame_serializer.data)
