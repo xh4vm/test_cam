@@ -1,0 +1,14 @@
+[
+    {
+        "contributors": [1,2]
+    },
+    {
+        "contributors": [1]
+    },
+    {
+        "contributors": [3]
+    },
+    {
+        "contributors": [1,2,3]
+    }
+]
