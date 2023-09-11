@@ -20,11 +20,12 @@ class VideoFrameView(APIView, DefaultPaginator):
         contributors_serializer = FrameContributorSerializer(data=request.data)
 
         if not frame_serializer.is_valid() or not contributors_serializer.is_valid():
-            logger.error(frame_serializer.errors + contributors_serializer.errors)
+            logger.error({**frame_serializer.errors, **contributors_serializer.errors})
         
         user_sessions = (UserSession
             .objects
-            .filter(user_id__in=contributors_serializer.validated_data['contributors']))
+            .filter(user_id__in=contributors_serializer.validated_data['contributors'])
+            .all())
 
         if len(user_sessions) == 0:
             return Response(

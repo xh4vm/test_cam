@@ -1,6 +1,6 @@
 from frame.models import Frame
 from jsonschema import validate
-from rest_framework.serializers import ModelSerializer, DateTimeField, Serializer, JSONField, IntegerField
+from rest_framework.serializers import ModelSerializer, DateTimeField, Serializer, JSONField
 
 
 class FrameSerializer(ModelSerializer):
@@ -19,11 +19,12 @@ class FrameSerializer(ModelSerializer):
 class FrameContributorSerializer(Serializer):
     contributors = JSONField()
 
-    # def validate_contributors(self, contributors: list[int]) -> list[int]:
-    #     schema = {
-    #         'type': 'array',
-    #         'items': {
-    #             'type': 'number'
-    #         }
-    #     }
-    #     validate(instance=contributors, schema=schema)
+    def validate_contributors(self, contributors: list[int]) -> list[int]:
+        schema = {
+            'type': 'array',
+            'items': {
+                'type': 'number'
+            }
+        }
+        validate(instance=contributors, schema=schema)
+        return contributors
