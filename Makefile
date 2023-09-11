@@ -69,8 +69,12 @@ makemigrations-run:
 	$(call log,Run django migrations)
 	docker exec -it app python3 /opt/app/manage.py makemigrations
 
-
 .PHONY: clean all docker images
 clean-all-dockers:
 	$(call log,Run stop remove and cleaning memory)
 	T=$$(docker ps -q); docker stop $$T; docker rm $$T; docker container prune -f
+
+.PHONY: clean all docker images
+data-gen:
+	$(call log,Run data generator)
+	poetry run python3 ./data_generator/main.py

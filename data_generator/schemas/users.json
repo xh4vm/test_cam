@@ -1,6 +1,7 @@
 [
     {
-        "email": "user1@test.ru"
+        "email": "user1@test.ru",
+        "password": "test123!@#"
     },
     {
         "email": "user2@test.ru"

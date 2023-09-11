@@ -1,4 +1,6 @@
-from pydantic import BaseSettings, Field
+import os
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class ApiSettings(BaseSettings):
@@ -9,3 +11,11 @@ class ApiSettings(BaseSettings):
 
     class Config:
         env_prefix = 'API_'
+
+
+class Config(BaseSettings):
+    API: ApiSettings = ApiSettings()
+    BASE_DIR: str = os.path.dirname(os.path.abspath(__file__))
+
+
+CONFIG = Config()
