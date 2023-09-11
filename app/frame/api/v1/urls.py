@@ -1,7 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 
-from .views import VideoFrameView
+from config.routers import OptionalSlashRouter
+from .views import VideoFrameViewSet
+
+router = OptionalSlashRouter()
+router.register('frame', VideoFrameViewSet, basename='frame')
 
 urlpatterns = [
-    path('frame', VideoFrameView.as_view(), name='frame'),
+    path('', include(router.urls)),
 ]

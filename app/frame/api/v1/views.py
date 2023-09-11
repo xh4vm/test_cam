@@ -1,21 +1,30 @@
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from django.db.models.query import QuerySet
 from loguru import logger
 
 from config.permissions import UnauthenticatedPOST
-from config.paginators import DefaultPaginator
 from frame.serializers import FrameSerializer, FrameContributorSerializer
 from frame.models import UserFrame, Frame
 from .responses import CreateVideoFrame
 from user.models import UserSession
 
 
-class VideoFrameView(APIView, DefaultPaginator):
+class VideoFrameViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated | UnauthenticatedPOST]
+    serializer_class = FrameSerializer
 
-    def post(self, request):
+    def get_queryset(self) -> QuerySet:
+        user_id = self.request.user.id
+
+        return Frame.objects.filter(
+            id__in=UserFrame.objects.filter(user_id=user_id)
+        )
+    
+    def create(self, request):
         frame_serializer = FrameSerializer(data=request.data)
         contributors_serializer = FrameContributorSerializer(data=request.data)
 
@@ -43,15 +52,3 @@ class VideoFrameView(APIView, DefaultPaginator):
             {'message': CreateVideoFrame.SUCCESS.substitute(count=len(user_sessions))},
             status=status.HTTP_201_CREATED
         )
-
-    def get(self, request):
-        user_id = request.user.id
-
-        frames = Frame.objects.filter(
-            id__in=UserFrame.objects.filter(user_id=user_id)
-        ).all()
-
-        paginated_frames = self.paginate_queryset(frames, request, view=self)
-        frame_serializer = FrameSerializer(paginated_frames, many=True)
-
-        return self.get_paginated_response(frame_serializer.data)
