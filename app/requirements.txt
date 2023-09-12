@@ -7,3 +7,5 @@ python-dotenv==1.0.0
 jsonschema==4.19.0
 loguru==0.7.1
 uWSGI==2.0.22
+django-rest-swagger==2.2.0
+drf-yasg==1.21.7

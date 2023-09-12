@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'frame.apps.FrameConfig',
     'debug_toolbar',
     'corsheaders',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
