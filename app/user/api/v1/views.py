@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
 from rest_framework.views import APIView
 from user.serializers import UserSerializer
-from user.api.v1.responses import LoginResponse, LogoutResponse
+from user.api.v1.responses import LoginResponse, LogoutResponse, RegistrationResponse
 from config.permissions import UnauthenticatedPOST
 from config.serializers import BaseResponseSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -13,6 +13,14 @@ from drf_yasg import openapi
 
 class RegistrationUserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = UserSerializer
+
+    @swagger_auto_schema(
+        request_body=UserSerializer,
+        responses={201: BaseResponseSerializer()}
+    )
+    def create(self, request, *args, **kwargs):
+        super().create(request, *args, **kwargs)
+        return Response({'message': RegistrationResponse.SUCCESS}, status=status.HTTP_201_CREATED)
 
 
 class AuthUserView(APIView):

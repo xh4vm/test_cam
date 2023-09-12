@@ -1,5 +1,8 @@
 
 
+class RegistrationResponse:
+    SUCCESS = 'Success registration'
+
 class LoginResponse:
     SUCCESS = 'Login Success'
     INVALID = 'Invalid Credentials'
