@@ -1,6 +1,12 @@
 from django.db import models
 from config.models import IDMixin, TimeStampMixin
-from frame.validators import video_color_schema_validator, frame_id_validator, cam_id_validator, channel_validator, config_validator
+from frame.validators import (
+    video_color_schema_validator,
+    frame_id_validator,
+    cam_id_validator,
+    channel_validator,
+    config_validator,
+)
 
 
 class UserFrame(IDMixin, TimeStampMixin):
@@ -9,9 +15,9 @@ class UserFrame(IDMixin, TimeStampMixin):
 
     def __str__(self) -> str:
         return str(self.id)
-    
+
     class Meta:
-        db_table = 'user_frame'
+        db_table = "user_frame"
 
 
 class Frame(TimeStampMixin):
@@ -26,4 +32,4 @@ class Frame(TimeStampMixin):
         return str(self.id)
 
     class Meta:
-        db_table = 'frame'
+        db_table = "frame"

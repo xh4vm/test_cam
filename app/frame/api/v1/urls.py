@@ -4,8 +4,8 @@ from config.routers import OptionalSlashRouter
 from .views import VideoFrameViewSet
 
 router = OptionalSlashRouter()
-router.register('frame', VideoFrameViewSet, basename='frame')
+router.register("frame", VideoFrameViewSet, basename="frame")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

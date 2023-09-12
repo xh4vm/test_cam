@@ -23,6 +23,7 @@ pydantic-settings = "^2.0.3"
 asyncclick = "^8.1.3.4"
 anyio = "^4.0.0"
 drf-yasg = "^1.21.7"
+black = "^23.9.1"
 
 
 [build-system]

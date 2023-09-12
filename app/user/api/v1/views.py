@@ -14,13 +14,12 @@ from drf_yasg import openapi
 class RegistrationUserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = UserSerializer
 
-    @swagger_auto_schema(
-        request_body=UserSerializer,
-        responses={201: BaseResponseSerializer()}
-    )
+    @swagger_auto_schema(responses={201: BaseResponseSerializer()})
     def create(self, request, *args, **kwargs):
         super().create(request, *args, **kwargs)
-        return Response({'message': RegistrationResponse.SUCCESS}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": RegistrationResponse.SUCCESS}, status=status.HTTP_201_CREATED
+        )
 
 
 class AuthUserView(APIView):
@@ -28,28 +27,38 @@ class AuthUserView(APIView):
 
     @swagger_auto_schema(
         request_body=UserSerializer,
-        responses={201: BaseResponseSerializer(), 400: BaseResponseSerializer(), 401: BaseResponseSerializer()}
+        responses={
+            201: BaseResponseSerializer(),
+            400: BaseResponseSerializer(),
+            401: BaseResponseSerializer(),
+        },
     )
     def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
 
-        email = request.data.get('email')
-        password = request.data.get('password')
-        
         if email is None or password is None:
-            return Response({'message': LoginResponse.MISSING}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": LoginResponse.MISSING}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
-            return Response({'message': LoginResponse.SUCCESS}, status=status.HTTP_200_OK)
+            return Response(
+                {"message": LoginResponse.SUCCESS}, status=status.HTTP_200_OK
+            )
 
-        return Response({'message': LoginResponse.INVALID}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(
+            {"message": LoginResponse.INVALID}, status=status.HTTP_401_UNAUTHORIZED
+        )
 
-    @swagger_auto_schema(manual_parameters=[
-        openapi.Parameter('X-CSRFToken', openapi.IN_HEADER, type=openapi.IN_HEADER)
-    ])
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter("X-CSRFToken", openapi.IN_HEADER, type=openapi.IN_HEADER)
+        ]
+    )
     def delete(self, request):
-
         logout(request)
-        return Response({'message': LogoutResponse.SUCCESS}, status=status.HTTP_200_OK)
+        return Response({"message": LogoutResponse.SUCCESS}, status=status.HTTP_200_OK)

@@ -3,7 +3,6 @@ import user
 
 
 class SessionStore(DBStore):
-
     @classmethod
     def get_model_class(cls):
         return user.models.UserSession
@@ -12,7 +11,7 @@ class SessionStore(DBStore):
         obj = super(SessionStore, self).create_model_instance(data)
 
         try:
-            user_id = int(data.get('_auth_user_id'))
+            user_id = int(data.get("_auth_user_id"))
         except (ValueError, TypeError):
             user_id = None
 

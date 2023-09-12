@@ -29,11 +29,13 @@ class BaseDataGenerator(ABC):
         """HTTP method"""
 
     async def _get_fake_data_from_file(self) -> Iterable[dict[str, Any]]:
-        with open(f'{CONFIG.BASE_DIR}/schemas/{self.schema}.json', 'r') as fd:
+        with open(f"{CONFIG.BASE_DIR}/schemas/{self.schema}.json", "r") as fd:
             for _ in json.loads(fd.read()):
                 yield _
 
-    async def _get_fake_model(self, fake_data: Iterable[dict[str, Any]]) -> Iterable[dict[str, Any]]:
+    async def _get_fake_model(
+        self, fake_data: Iterable[dict[str, Any]]
+    ) -> Iterable[dict[str, Any]]:
         async for obj in fake_data:
             yield self.fake_model(**obj)
 
@@ -44,4 +46,6 @@ class BaseDataGenerator(ABC):
             async for model in self._get_fake_model(fake_data):
                 func = getattr(session, self.method.lower())
                 async with func(self.url, json=model.dict()) as response:
-                    logger.info(f'status: "{response.status}" | response: "{await response.json()}"')
+                    logger.info(
+                        f'status: "{response.status}" | response: "{await response.json()}"'
+                    )

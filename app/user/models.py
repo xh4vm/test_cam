@@ -7,9 +7,8 @@ from config.models import IDMixin, TimeStampMixin
 
 class UserManager(BaseUserManager):
     def create_user(self, email: str, password: str | None = None):
-
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError("Users must have an email address")
 
         user = self.model(email=self.normalize_email(email))
 
@@ -22,14 +21,14 @@ class User(IDMixin, TimeStampMixin, AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email
-    
+
     class Meta:
-        db_table = 'user'
+        db_table = "user"
 
 
 class UserSession(AbstractBaseSession):
@@ -41,4 +40,3 @@ class UserSession(AbstractBaseSession):
     @classmethod
     def get_session_store_class(cls):
         return SessionStore
-

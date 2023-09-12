@@ -10,13 +10,13 @@ from runs import user_generator, user_logins_generator, frame_generator
 async def main(users: bool, logins: bool, frames: bool):
     if users:
         await user_generator.load()
-    
+
     if logins:
         await user_logins_generator.load()
-    
-    if frames:    
+
+    if frames:
         await frame_generator.load()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())
