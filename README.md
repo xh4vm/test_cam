@@ -33,6 +33,7 @@
 cp .env.example .env
 rm -rf ./nginx/static && cp -r ./nginx/static_defaults/ ./nginx/static
 make run
+make makemigrations && make migrate
 ```
 
 ## Запуск источника данных
