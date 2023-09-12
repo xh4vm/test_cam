@@ -32,6 +32,7 @@
 ```
 cp .env.example .env
 rm -rf ./nginx/static && cp -r ./nginx/static_defaults/ ./nginx/static
+rm -rf ./db && mkdir -p db
 make run
 make makemigrations && make migrate
 ```
