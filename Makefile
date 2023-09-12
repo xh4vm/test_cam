@@ -74,7 +74,22 @@ clean-all-dockers:
 	$(call log,Run stop remove and cleaning memory)
 	T=$$(docker ps -q); docker stop $$T; docker rm $$T; docker container prune -f
 
-.PHONY: clean all docker images
+.PHONY: data generation users
+data-gen-users:
+	$(call log,Run data generator for users)
+	poetry run python3 ./data_generator/main.py --users
+
+.PHONY: data generation frames
+data-gen-frames:
+	$(call log,Run data generator for frames)
+	poetry run python3 ./data_generator/main.py --frames
+
+.PHONY: data generation user logins
+data-gen-logins:
+	$(call log,Run data generator for user logins)
+	poetry run python3 ./data_generator/main.py --logins
+
+.PHONY: data generation all
 data-gen:
 	$(call log,Run data generator)
-	poetry run python3 ./data_generator/main.py
+	poetry run python3 ./data_generator/main.py --users --frames --logins

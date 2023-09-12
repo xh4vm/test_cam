@@ -1,16 +1,22 @@
 import asyncio
-from src.generator.user import UserDataGenerator
-from src.generator.user_logins import UserLoginsDataGenerator
-from src.generator.frame import FrameDataGenerator
+import asyncclick as click
+from runs import user_generator, user_logins_generator, frame_generator
+
+
+@click.command()
+@click.option("--users", is_flag=True, help="API for user registrations.")
+@click.option("--logins", is_flag=True, help="API for user logins.")
+@click.option("--frames", is_flag=True, help="API for frames.")
+async def main(users: bool, logins: bool, frames: bool):
+    if users:
+        await user_generator.load()
+    
+    if logins:
+        await user_logins_generator.load()
+    
+    if frames:    
+        await frame_generator.load()
 
 
 if __name__ == '__main__':
-    user_generator = UserDataGenerator()
-    user_logins_generator = UserLoginsDataGenerator()
-    frame_generator = FrameDataGenerator()
-
-    asyncio.run(user_generator.load())
-    
-    asyncio.run(user_logins_generator.load())
-    
-    asyncio.run(frame_generator.load())
+    asyncio.run(main())
