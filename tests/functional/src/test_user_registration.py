@@ -8,7 +8,7 @@ from ..utils.responses.user import RegistrationResponse
 pytestmark = pytest.mark.asyncio
 
 
-async def test_user_registration_success(sqlite_get_request, sqlite_delete_request, make_request):
+async def test_user_registration_success(sqlite_get_request, make_request):
     user_email = 'new-user@test.ru'
     user = FakeUser(email=user_email, password='test123!@#')
     
@@ -22,8 +22,6 @@ async def test_user_registration_success(sqlite_get_request, sqlite_delete_reque
 
     assert len(user_data) == 1
 
-    await sqlite_delete_request(model=FakeUser, table='user', email=user_email)
-    
     assert response.status == HTTPStatus.CREATED
     assert response.body['message'] == RegistrationResponse.SUCCESS
 

@@ -35,6 +35,30 @@ async def sqlite_client():
     await client.close()
 
 
+@pytest_asyncio.fixture(scope='session')
+async def session():
+    session = aiohttp.ClientSession()
+
+    yield session
+
+    await session.close()
+
+
+async def _make_request(
+    session: aiohttp.ClientSession,
+    request_method: str,
+    rest_method: str,
+    params: dict[str, Any] | None = None,
+    json: dict[str, Any] | None = None
+):
+    params = params or {}
+    json = json or {}
+    url = SERVICE_URL + f'{CONFIG.API.PATH}/{CONFIG.API.VERSION}/' + rest_method
+    
+    async with getattr(session, request_method.lower())(url, params=params, json=json) as response:
+        return HTTPResponse(body=await response.json(), headers=response.headers, status=response.status,)
+
+
 @pytest_asyncio.fixture
 def make_request():
 
@@ -46,16 +70,25 @@ def make_request():
     ) -> HTTPResponse:
         
         session = aiohttp.ClientSession()
-
-        params = params or {}
-        url = SERVICE_URL + f'{CONFIG.API.PATH}/{CONFIG.API.VERSION}/' + rest_method
-        
-        async with getattr(session, request_method.lower())(url, params=params, json=json) as response:
-            response = HTTPResponse(body=await response.json(), headers=response.headers, status=response.status,)
-
+        response = await _make_request(session, request_method, rest_method, params, json)
         await session.close()
 
         return response
+
+    return inner
+
+
+@pytest_asyncio.fixture
+def make_request_context(session):
+
+    async def inner(
+        request_method: str,
+        rest_method: str,
+        params: dict[str, Any] | None = None,
+        json: dict[str, Any] | None = None
+    ) -> HTTPResponse:
+        
+        return await _make_request(session, request_method, rest_method, params, json)
 
     return inner
 

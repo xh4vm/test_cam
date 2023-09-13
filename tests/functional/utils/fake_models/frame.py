@@ -26,3 +26,12 @@ class FakeFrame(FakeBaseMixin, FakeTimestampMixin):
         data = super().dict()
         data['VideoColor'] = json.dumps(data['VideoColor'])
         return data
+
+    def request_data(self):
+        return {
+            'cam_id': self.cam_id,
+            'VideoColor': self.VideoColor,
+            'TimeSection': self.TimeSection,
+            'ChannelNo': self.ChannelNo,
+            'ConfigNo': self.ConfigNo,
+        }
