@@ -12,6 +12,9 @@ from .utils.data_generators.sqlite.user import UserDataGenerator
 from .utils.data_generators.sqlite.frame import FrameDataGenerator
 from .utils.data_generators.sqlite.user_frame import UserFrameDataGenerator
 
+from .utils.storage.sqlite import SQLiteStorage
+
+
 SERVICE_URL = f'{CONFIG.API.URL}:{CONFIG.API.PORT}'
 
 
@@ -46,6 +49,15 @@ def make_request(session):
         
         async with getattr(session, request_method)(url, params=params) as response:
             return HTTPResponse(body=await response.json(), headers=response.headers, status=response.status,)
+
+    return inner
+
+
+@pytest_asyncio.fixture
+def sqlite_get_request(session, sqlite_client):
+    async def inner(model: type, chunk_size: int = 20, *args, **kwargs) -> dict[str, Any]:
+        storage = SQLiteStorage(model=model, connection=sqlite_client, chunk_size=chunk_size)
+        return await storage.get(*args, **kwargs)
 
     return inner
 

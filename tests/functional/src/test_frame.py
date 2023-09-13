@@ -1,11 +1,11 @@
-from http import HTTPStatus
+# from http import HTTPStatus
 
-import pytest
+# import pytest
 
-from ..utils.fake_models.frame import FakeFrame
+# from ..utils.fake_models.frame import FakeFrame
 
-pytestmark = pytest.mark.asyncio
+# pytestmark = pytest.mark.asyncio
 
 
-async def test_frame(generate_frames, make_request):
-    assert True
+# async def test_frame(generate_frames, make_request):
+#     assert True
