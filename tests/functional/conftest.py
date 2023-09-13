@@ -1,7 +1,7 @@
 import asyncio
 import aiosqlite
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 import aiohttp
 import pytest_asyncio
@@ -39,12 +39,12 @@ async def sqlite_client():
 
 
 @pytest_asyncio.fixture
-def make_get_request(session):
-    async def inner(method: str, params: Optional[dict] = None) -> HTTPResponse:
+def make_request(session):
+    async def inner(request_method: str, rest_method: str, params: dict[str, Any] | None = None) -> HTTPResponse:
         params = params or {}
-        url = SERVICE_URL + f'{CONFIG.API.api_path}/{CONFIG.API.api_version}/' + method
-        async with session.get(url, params=params) as response:
-
+        url = SERVICE_URL + f'{CONFIG.API.PATH}/{CONFIG.API.VERSION}/' + rest_method
+        
+        async with getattr(session, request_method)(url, params=params) as response:
             return HTTPResponse(body=await response.json(), headers=response.headers, status=response.status,)
 
     return inner

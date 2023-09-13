@@ -7,5 +7,5 @@ from ..utils.fake_models.frame import FakeFrame
 pytestmark = pytest.mark.asyncio
 
 
-async def test_frame(generate_frames, make_get_request):
+async def test_frame(generate_frames, make_request):
     assert True
