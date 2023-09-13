@@ -23,49 +23,60 @@ class BaseSqliteDataGenerator(BaseDataGenerator):
     def __init__(self, conn: aiosqlite.Connection, chunk_size: int = 50) -> None:
         self.conn: aiosqlite.Connection = conn
         self.chunk_size: int = chunk_size
-        self.into_statement: list[str] = [field for field in self.fake_model.__fields__.keys()]
 
 
     async def load(self):
         fake_data: list[type] = []
-        # data: list[type] = []
+        data: list[type] = []
 
         with open(f'{CONFIG.BASE_DIR}/testdata/{self.table}.json', 'r') as fd:
             fake_data = json.load(fd)
 
         for elem in fake_data:
             model = self.fake_model.parse_obj(elem)
-            self.data.append(model)
+            data.append(model)
 
-        # await async_bulk(self.conn, self.data) 
-        await self._save_data()
+        await self._save_data(data=data)
 
-        return self.data
+        self.data = data
+        
+        return data
+
 
     async def clean(self):
-        query = f'DELETE FROM {self.table} WHERE {", ".join([f"{key} = ?" for key in self.into_statement])}'
+        into_statement: list[str] = [field for field in self.fake_model.__fields__.keys()]
+        query = f'DELETE FROM {self.table} WHERE {" AND ".join([f"{key} = ?" for key in into_statement])}'
+        values = (self._get_values_statement(data=elem) for elem in self.data)
 
-        await self.curs.executemany(query, self.data)
+        async with self.conn.cursor() as cursor: 
+            await cursor.executemany(query, values)
+        
+        await self.conn.commit()
+
 
     def _get_values_statement(self, data: type) -> tuple[Any]:
+        into_statement: list[str] = [field for field in self.fake_model.__fields__.keys()]
+
         try:
             data_as_dict: dict[str, Any] = data.dict()
         except:
             logger.error("Oops")
-        return tuple(data_as_dict[key] for key in self.into_statement)
-    
-    async def _save_data(self) -> None:
-        values = [self._get_values_statement(data=elem) for elem in self.data]
+        return tuple(data_as_dict[key] for key in into_statement)
+
+ 
+    async def _save_data(self, data: dict[str, Any]) -> None:
+        into_statement: list[str] = [field for field in self.fake_model.__fields__.keys()]
+        values = (self._get_values_statement(data=elem) for elem in data)
         
         insert_query: str = (
             f'INSERT INTO {self.table} '
-            f'({", ".join(self.into_statement)}) '
-            f'VALUES ({", ".join(["?" for i in range(len(self.into_statement))])})'
+            f'({", ".join(into_statement)}) '
+            f'VALUES ({", ".join(["?" for i in range(len(into_statement))])})'
         )
 
         async with self.conn.cursor() as cursor: 
             await cursor.executemany(insert_query, values)
-        
+
         await self.conn.commit()
 
         logger.debug(f'Success multiple insert {self.table} ({len(self.data)} objects)')

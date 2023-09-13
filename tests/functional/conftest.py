@@ -9,6 +9,8 @@ from multidict import CIMultiDictProxy
 
 from .settings import CONFIG
 from .utils.data_generators.sqlite.user import UserDataGenerator
+from .utils.data_generators.sqlite.frame import FrameDataGenerator
+from .utils.data_generators.sqlite.user_frame import UserFrameDataGenerator
 
 SERVICE_URL = f'{CONFIG.API.URL}:{CONFIG.API.PORT}'
 
@@ -62,3 +64,21 @@ async def generate_users(sqlite_client):
     yield await user_dg.load()
 
     await user_dg.clean()
+
+
+@pytest_asyncio.fixture(scope='session')
+async def generate_frames(sqlite_client):
+    frame_dg = FrameDataGenerator(conn=sqlite_client)
+
+    yield await frame_dg.load()
+
+    await frame_dg.clean()
+
+
+@pytest_asyncio.fixture(scope='session')
+async def generate_user_frames(sqlite_client):
+    user_frame_dg = UserFrameDataGenerator(conn=sqlite_client)
+
+    yield await user_frame_dg.load()
+
+    await user_frame_dg.clean()

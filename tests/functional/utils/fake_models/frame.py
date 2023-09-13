@@ -1,10 +1,12 @@
+import json
 from random import randint
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import Field
 from typing import Any
+from .base import FakeTimestampMixin
 
 
-class FakeFrame(BaseModel):
+class FakeFrame(FakeTimestampMixin):
     cam_id: int = Field(default_factory=lambda: randint(1, 99))
     VideoColor: dict[str, Any] = Field(
         default_factory=lambda: {
@@ -19,6 +21,8 @@ class FakeFrame(BaseModel):
     )
     ChannelNo: int = Field(default_factory=lambda: randint(1, 2))
     ConfigNo: int = Field(default_factory=lambda: randint(0, 1))
-    contributors: list[int] = Field(
-        default_factory=lambda: [randint(1, 100) for i in range(randint(1, 10))]
-    )
+
+    def dict(self, *args, **kwargs) -> dict[str, Any]:
+        data = super().dict()
+        data['VideoColor'] = json.dumps(data['VideoColor'])
+        return data
