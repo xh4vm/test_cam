@@ -44,24 +44,22 @@ class BaseSqliteDataGenerator(BaseDataGenerator):
 
 
     async def clean(self):
-        into_statement: list[str] = [field for field in self.fake_model.__fields__.keys()]
-        query = f'DELETE FROM {self.table} WHERE {" AND ".join([f"{key} = ?" for key in into_statement])}'
-        values = (self._get_values_statement(data=elem) for elem in self.data)
-
+        query = f'DELETE FROM {self.table}'
+        
         async with self.conn.cursor() as cursor: 
-            await cursor.executemany(query, values)
+            await cursor.execute(query)
         
         await self.conn.commit()
 
 
-    def _get_values_statement(self, data: type) -> tuple[Any]:
-        into_statement: list[str] = [field for field in self.fake_model.__fields__.keys()]
+    def _get_values_statement(self, data: type, fields: list[str] | None = None) -> tuple[Any]:
+        fields: list[str] = fields or [field for field in self.fake_model.__fields__.keys()]
 
         try:
             data_as_dict: dict[str, Any] = data.dict()
         except:
             logger.error("Oops")
-        return tuple(data_as_dict[key] for key in into_statement)
+        return tuple(data_as_dict[key] for key in fields)
 
  
     async def _save_data(self, data: dict[str, Any]) -> None:

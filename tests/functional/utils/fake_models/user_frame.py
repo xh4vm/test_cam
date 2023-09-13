@@ -1,6 +1,6 @@
-from .base import FakeTimestampMixin
+from .base import FakeTimestampMixin, FakeBaseMixin
 
 
-class FakeUserFrame(FakeTimestampMixin):
+class FakeUserFrame(FakeBaseMixin, FakeTimestampMixin):
     user_id: int
     frame_id: int

@@ -3,10 +3,10 @@ from random import randint
 from datetime import datetime
 from pydantic import Field
 from typing import Any
-from .base import FakeTimestampMixin
+from .base import FakeTimestampMixin, FakeBaseMixin
 
 
-class FakeFrame(FakeTimestampMixin):
+class FakeFrame(FakeBaseMixin, FakeTimestampMixin):
     cam_id: int = Field(default_factory=lambda: randint(1, 99))
     VideoColor: dict[str, Any] = Field(
         default_factory=lambda: {

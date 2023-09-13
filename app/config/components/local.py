@@ -35,15 +35,3 @@ SESSION_COOKIE_HTTPONLY = True
 
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-        "OPTIONS": {
-            "min_length": 8,
-        },
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
