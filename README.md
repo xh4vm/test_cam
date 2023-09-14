@@ -32,7 +32,7 @@
 ```
 cp .env.example .env
 rm -rf ./nginx/static && cp -r ./nginx/static_defaults/ ./nginx/static
-rm -rf ./db && mkdir -p db
+rm -rf ./db && mkdir db
 make run
 make makemigrations && make migrate
 ```
@@ -47,3 +47,6 @@ make data-gen-frames # отправить запросы на создание �
 
 ## Документация swagger
 http://localhost/api/swagger
+
+## Тестирование
+`make tests`

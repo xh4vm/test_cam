@@ -35,6 +35,16 @@ services:
     ports:
       - 80:80
 
+  tests:
+    <<: *base_service
+    build: ./tests
+    container_name: tests
+    depends_on:
+      - app
+    env_file: .env
+    volumes:
+      - ./db:/db
+
 
 networks:
   app-net:
