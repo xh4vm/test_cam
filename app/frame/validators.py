@@ -1,6 +1,3 @@
-from typing import Any
-from jsonschema import validate
-
 
 def frame_id_validator(id: int):
     if not 0 < id < 1000:

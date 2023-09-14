@@ -7,9 +7,6 @@ from config.models import IDMixin, TimeStampMixin
 
 class UserManager(BaseUserManager):
     def create_user(self, email: str, password: str | None = None):
-        if not email:
-            raise ValueError("Users must have an email address")
-
         user = self.model(email=self.normalize_email(email))
 
         user.set_password(password)

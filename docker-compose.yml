@@ -39,6 +39,8 @@ services:
     <<: *base_service
     build: ./tests
     container_name: tests
+    profiles:
+      - tests
     depends_on:
       - app
     env_file: .env

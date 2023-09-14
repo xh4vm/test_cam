@@ -13,6 +13,12 @@ class UserSerializer(ModelSerializer):
             email=data.get("email"), password=data.get("password")
         )
 
+    def validate_email(self, email: str) -> str:
+        if not email:
+            raise SerializerValidationError("Users must have an email address")
+
+        return email
+
     def validate_password(self, password: str) -> str:
         try:
             validate_password(password)
