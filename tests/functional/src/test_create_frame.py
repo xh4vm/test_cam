@@ -98,3 +98,199 @@ async def test_frame_create_multiple_success(
 
     assert response.status == HTTPStatus.CREATED
     assert response.body['message'] == CreateVideoFrame.SUCCESS.substitute(count=2)
+
+async def test_frame_create_cam_id_error(
+    generate_users,
+    generate_frames,
+    generate_user_sessions,
+    generate_user_frames,
+    sqlite_get_request,
+    make_request
+):
+    user = generate_users[7]
+
+    contributors = [8]
+    frame = FakeFrame(cam_id=-1)
+    
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+    
+    assert len(user_frame_data) == 0
+
+    await make_request('POST', 'user/auth', json=user.request_data())
+    
+    response = await make_request('POST', 'frame', json={**frame.request_data(), 'contributors':contributors})
+
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+
+    assert len(user_frame_data) == 0
+
+    assert response.status == HTTPStatus.BAD_REQUEST
+    assert CreateVideoFrame.CAM_ID_ERROR in response.body['cam_id']
+
+async def test_frame_create_channel_id_error(
+    generate_users,
+    generate_frames,
+    generate_user_sessions,
+    generate_user_frames,
+    sqlite_get_request,
+    make_request
+):
+    user = generate_users[7]
+
+    contributors = [8]
+    frame = FakeFrame(ChannelNo=100)
+    
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+    
+    assert len(user_frame_data) == 0
+
+    await make_request('POST', 'user/auth', json=user.request_data())
+    
+    response = await make_request('POST', 'frame', json={**frame.request_data(), 'contributors':contributors})
+
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+
+    assert len(user_frame_data) == 0
+
+    assert response.status == HTTPStatus.BAD_REQUEST
+    assert CreateVideoFrame.CHANNEL_ID_ERROR in response.body['ChannelNo']
+
+async def test_frame_create_config_id_error(
+    generate_users,
+    generate_frames,
+    generate_user_sessions,
+    generate_user_frames,
+    sqlite_get_request,
+    make_request
+):
+    user = generate_users[7]
+
+    contributors = [8]
+    frame = FakeFrame(ConfigNo=100)
+    
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+    
+    assert len(user_frame_data) == 0
+
+    await make_request('POST', 'user/auth', json=user.request_data())
+    
+    response = await make_request('POST', 'frame', json={**frame.request_data(), 'contributors':contributors})
+
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+
+    assert len(user_frame_data) == 0
+
+    assert response.status == HTTPStatus.BAD_REQUEST
+    assert CreateVideoFrame.CONFIG_ID_ERROR in response.body['ConfigNo']
+
+async def test_frame_create_video_color_brightness(
+    generate_users,
+    generate_frames,
+    generate_user_sessions,
+    generate_user_frames,
+    sqlite_get_request,
+    make_request
+):
+    user = generate_users[7]
+
+    contributors = [8]
+    frame = FakeFrame(VideoColor={'Brightness': 1000, 'Contrast': 1, 'Hue': 1, 'Saturation': 1})
+    
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+    
+    assert len(user_frame_data) == 0
+
+    await make_request('POST', 'user/auth', json=user.request_data())
+    
+    response = await make_request('POST', 'frame', json={**frame.request_data(), 'contributors':contributors})
+
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+
+    assert len(user_frame_data) == 0
+
+    assert response.status == HTTPStatus.BAD_REQUEST
+    assert CreateVideoFrame.VIDEO_COLOR_ERROR.substitute(number=1000, key='Brightness') in response.body['VideoColor']
+
+async def test_frame_create_video_color_contrast(
+    generate_users,
+    generate_frames,
+    generate_user_sessions,
+    generate_user_frames,
+    sqlite_get_request,
+    make_request
+):
+    user = generate_users[7]
+
+    contributors = [8]
+    frame = FakeFrame(VideoColor={'Brightness': 1, 'Contrast': 1000, 'Hue': 1, 'Saturation': 1})
+    
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+    
+    assert len(user_frame_data) == 0
+
+    await make_request('POST', 'user/auth', json=user.request_data())
+    
+    response = await make_request('POST', 'frame', json={**frame.request_data(), 'contributors':contributors})
+
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+
+    assert len(user_frame_data) == 0
+
+    assert response.status == HTTPStatus.BAD_REQUEST
+    assert CreateVideoFrame.VIDEO_COLOR_ERROR.substitute(number=1000, key='Contrast') in response.body['VideoColor']
+
+async def test_frame_create_video_color_hue(
+    generate_users,
+    generate_frames,
+    generate_user_sessions,
+    generate_user_frames,
+    sqlite_get_request,
+    make_request
+):
+    user = generate_users[7]
+
+    contributors = [8]
+    frame = FakeFrame(VideoColor={'Brightness': 1, 'Contrast': 1, 'Hue': 1000, 'Saturation': 1})
+    
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+    
+    assert len(user_frame_data) == 0
+
+    await make_request('POST', 'user/auth', json=user.request_data())
+    
+    response = await make_request('POST', 'frame', json={**frame.request_data(), 'contributors':contributors})
+
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+
+    assert len(user_frame_data) == 0
+
+    assert response.status == HTTPStatus.BAD_REQUEST
+    assert CreateVideoFrame.VIDEO_COLOR_ERROR.substitute(number=1000, key='Hue') in response.body['VideoColor']
+
+async def test_frame_create_video_color_saturation(
+    generate_users,
+    generate_frames,
+    generate_user_sessions,
+    generate_user_frames,
+    sqlite_get_request,
+    make_request
+):
+    user = generate_users[7]
+
+    contributors = [8]
+    frame = FakeFrame(VideoColor={'Brightness': 1, 'Contrast': 1, 'Hue': 1, 'Saturation': 1000})
+    
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+    
+    assert len(user_frame_data) == 0
+
+    await make_request('POST', 'user/auth', json=user.request_data())
+    
+    response = await make_request('POST', 'frame', json={**frame.request_data(), 'contributors':contributors})
+
+    user_frame_data = await sqlite_get_request(model=FakeUserFrame, table='user_frame', user_id=user.id)
+
+    assert len(user_frame_data) == 0
+
+    assert response.status == HTTPStatus.BAD_REQUEST
+    assert CreateVideoFrame.VIDEO_COLOR_ERROR.substitute(number=1000, key='Saturation') in response.body['VideoColor']

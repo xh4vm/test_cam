@@ -2,6 +2,8 @@ from http import HTTPStatus
 
 import pytest
 
+from ..utils.responses.frame import CreateVideoFrame
+
 
 pytestmark = pytest.mark.asyncio
 
@@ -56,3 +58,4 @@ async def test_frame_detail_forbidden(
     response = await make_request('GET', f'frame/{frame.id}')
 
     assert response.status == HTTPStatus.FORBIDDEN
+    assert response.body['detail'] == CreateVideoFrame.FORBIDDEN

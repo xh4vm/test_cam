@@ -3,6 +3,7 @@ from http import HTTPStatus
 import pytest
 
 from ..utils.fake_models.user_frame import FakeUserFrame
+from ..utils.responses.frame import CreateVideoFrame
 
 pytestmark = pytest.mark.asyncio
 
@@ -48,3 +49,4 @@ async def test_frame_list_forbidden(
     response = await make_request('GET', 'frame')
 
     assert response.status == HTTPStatus.FORBIDDEN
+    assert response.body['detail'] == CreateVideoFrame.FORBIDDEN

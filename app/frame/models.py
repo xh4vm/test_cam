@@ -1,12 +1,6 @@
 from django.db import models
 from config.models import IDMixin, TimeStampMixin
-from frame.validators import (
-    video_color_schema_validator,
-    frame_id_validator,
-    cam_id_validator,
-    channel_validator,
-    config_validator,
-)
+from frame.validators import frame_id_validator
 
 
 class UserFrame(IDMixin, TimeStampMixin):
@@ -22,11 +16,11 @@ class UserFrame(IDMixin, TimeStampMixin):
 
 class Frame(TimeStampMixin):
     id = models.AutoField(primary_key=True, validators=[frame_id_validator])
-    cam_id = models.IntegerField(validators=[cam_id_validator])
-    VideoColor = models.JSONField(validators=[video_color_schema_validator])
+    cam_id = models.IntegerField()
+    VideoColor = models.JSONField()
     TimeSection = models.DateTimeField()
-    ChannelNo = models.IntegerField(validators=[channel_validator])
-    ConfigNo = models.IntegerField(validators=[config_validator])
+    ChannelNo = models.IntegerField()
+    ConfigNo = models.IntegerField()
 
     def __str__(self) -> str:
         return str(self.id)

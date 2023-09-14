@@ -78,8 +78,11 @@ class VideoFrameViewSet(
         frame_serializer = self.get_serializer(data=request.data)
         contributors_serializer = FrameContributorSerializer(data=request.data)
 
-        if not frame_serializer.is_valid() or not contributors_serializer.is_valid():
-            logger.error({**frame_serializer.errors, **contributors_serializer.errors})
+        if not frame_serializer.is_valid(raise_exception=True):
+            logger.error(frame_serializer.errors)
+
+        if not contributors_serializer.is_valid(raise_exception=True):
+            logger.error(contributors_serializer.errors)
 
         user_sessions = UserSession.objects.filter(
             user_id__in=contributors_serializer.validated_data["contributors"]

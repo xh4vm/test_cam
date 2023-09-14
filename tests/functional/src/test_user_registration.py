@@ -40,7 +40,7 @@ async def test_user_registration_already_exists(generate_users, sqlite_get_reque
     assert len(user_data) == 1
 
     assert response.status == HTTPStatus.BAD_REQUEST
-    assert response.body['email'] == RegistrationResponse.ALREADY_EXISTS
+    assert RegistrationResponse.ALREADY_EXISTS in response.body['email']
 
 
 async def test_user_registration_bad_email(make_request):
@@ -50,4 +50,40 @@ async def test_user_registration_bad_email(make_request):
     response = await make_request('POST', 'user/registration', json=user.request_data())
 
     assert response.status == HTTPStatus.BAD_REQUEST
-    assert response.body['email'] == RegistrationResponse.INVALID_EMAIL
+    assert RegistrationResponse.INVALID_EMAIL in response.body['email']
+
+
+async def test_user_registration_numeric_password(generate_users, sqlite_get_request, make_request):
+    user_email = 'new-user@test.ru'
+    user = FakeUser(email=user_email, password='1234567890')
+    
+    user_data = await sqlite_get_request(model=FakeUser, table='user', email=user_email)
+    
+    assert len(user_data) == 0
+
+    response = await make_request('POST', 'user/registration', json=user.request_data())
+
+    user_data = await sqlite_get_request(model=FakeUser, table='user', email=user_email)
+
+    assert len(user_data) == 0
+
+    assert response.status == HTTPStatus.BAD_REQUEST
+    assert RegistrationResponse.PASSWORD_NUMERIC in response.body['password']
+
+
+async def test_user_registration_min_length_password(generate_users, sqlite_get_request, make_request):
+    user_email = 'new-user@test.ru'
+    user = FakeUser(email=user_email, password='t3St')
+    
+    user_data = await sqlite_get_request(model=FakeUser, table='user', email=user_email)
+    
+    assert len(user_data) == 0
+
+    response = await make_request('POST', 'user/registration', json=user.request_data())
+
+    user_data = await sqlite_get_request(model=FakeUser, table='user', email=user_email)
+
+    assert len(user_data) == 0
+
+    assert response.status == HTTPStatus.BAD_REQUEST
+    assert RegistrationResponse.PASSWORD_LENGTH in response.body['password']
