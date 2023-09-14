@@ -3,10 +3,10 @@ from random import randint
 from datetime import datetime
 from pydantic import Field
 from typing import Any
-from .base import FakeTimestampMixin, FakeBaseMixin
+from .base import FakeTimestampMixin, FakeBaseMixin, FakeIDMixin
 
 
-class FakeFrame(FakeBaseMixin, FakeTimestampMixin):
+class FakeFrame(FakeBaseMixin, FakeIDMixin, FakeTimestampMixin):
     cam_id: int = Field(default_factory=lambda: randint(1, 99))
     VideoColor: dict[str, Any] = Field(
         default_factory=lambda: {
@@ -16,9 +16,7 @@ class FakeFrame(FakeBaseMixin, FakeTimestampMixin):
             "Saturation": randint(0, 100),
         }
     )
-    TimeSection: str = Field(
-        default_factory=lambda: datetime.utcnow().strftime("%d-%m-%Y:%H-%M-%S")
-    )
+    TimeSection: datetime = Field(default_factory=datetime.utcnow)
     ChannelNo: int = Field(default_factory=lambda: randint(1, 2))
     ConfigNo: int = Field(default_factory=lambda: randint(0, 1))
 
@@ -31,7 +29,16 @@ class FakeFrame(FakeBaseMixin, FakeTimestampMixin):
         return {
             'cam_id': self.cam_id,
             'VideoColor': self.VideoColor,
-            'TimeSection': self.TimeSection,
+            'TimeSection': self.TimeSection.strftime("%d-%m-%Y:%H-%M-%S"),
+            'ChannelNo': self.ChannelNo,
+            'ConfigNo': self.ConfigNo,
+        }
+    
+    def response_data(self):
+        return {
+            'cam_id': self.cam_id,
+            'VideoColor': self.VideoColor,
+            'TimeSection': self.TimeSection.strftime("%Y-%m-%d %H:%M:%S"),
             'ChannelNo': self.ChannelNo,
             'ConfigNo': self.ConfigNo,
         }

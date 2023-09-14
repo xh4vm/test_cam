@@ -15,7 +15,7 @@ COPY --from=test-builder /usr/bin/tini /usr/bin/tini
 
 WORKDIR /opt/tests
 ENTRYPOINT [ "tini", "--" ]
-CMD ["pytest", "-s", "functional/src"]
+CMD ["pytest", "-s", "-vv", "functional/src"]
 
 COPY . .
 RUN pip install --no-index --find-links=/opt/wheels -r requirements.txt

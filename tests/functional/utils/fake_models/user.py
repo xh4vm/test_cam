@@ -2,10 +2,10 @@ from pydantic import Field
 from typing import Any
 from ..make_password.pbkdf2_sha256 import hash_password
 
-from .base import fake, FakeTimestampMixin
+from .base import fake, FakeTimestampMixin, FakeIDMixin
 
 
-class FakeUser(FakeTimestampMixin):
+class FakeUser(FakeIDMixin, FakeTimestampMixin):
     email: str = Field(default_factory=fake.email)
     password: str = Field(default_factory=fake.password)
 

@@ -23,8 +23,7 @@ class VideoFrameViewSet(
 
     def get_queryset(self) -> QuerySet:
         user_id = self.request.user.id
-
-        return Frame.objects.filter(id__in=UserFrame.objects.filter(user_id=user_id))
+        return Frame.objects.filter(id__in=UserFrame.objects.values_list('frame_id', flat=True).filter(user_id=user_id))
 
     @swagger_auto_schema(
         request_body=openapi.Schema(

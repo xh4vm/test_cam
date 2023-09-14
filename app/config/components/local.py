@@ -24,6 +24,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
     ],
+    'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
 }
 
 SESSION_ENGINE = "config.session"

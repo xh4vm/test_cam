@@ -4,6 +4,10 @@ from datetime import datetime
 
 fake = Faker()
 
+class FakeIDMixin(BaseModel):
+    id: int | None = Field(default=None)
+    
+
 class FakeBaseMixin(BaseModel):
     
     @classmethod

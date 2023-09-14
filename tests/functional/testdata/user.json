@@ -1,12 +1,29 @@
 [
     {
+        "id": 1,
         "email": "user1@test.ru",
         "password": "test123!@#"
     },
     {
-        "email": "user2@test.ru"
+        "id": 2,
+        "email": "user2@test.ru",
+        "password": "test123!@#"
     },
     {
+        "id": 3,
         "email": "user3@test.ru"
+    },
+    {
+        "id": 4,
+        "email": "user4@test.ru"
+    },
+    {
+        "id": 5
+    },
+    {
+        "id": 6
+    },
+    {
+        "id": 7
     }
 ]

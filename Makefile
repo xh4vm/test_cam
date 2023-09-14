@@ -93,3 +93,8 @@ data-gen-logins:
 data-gen:
 	$(call log,Run data generator)
 	poetry run python3 ./data_generator/main.py --users --frames --logins
+
+.PHONY: tests
+tests:
+	$(call log,Run tests)
+	docker-compose up tests

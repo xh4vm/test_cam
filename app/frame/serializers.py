@@ -9,7 +9,7 @@ from rest_framework.serializers import (
 
 
 class FrameSerializer(ModelSerializer):
-    TimeSection = DateTimeField(input_formats=["%d-%m-%Y:%H-%M-%S"])
+    TimeSection = DateTimeField(input_formats=["%d-%m-%Y:%H-%M-%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%SZ"])
 
     class Meta:
         model = Frame

@@ -23,6 +23,7 @@ SERVICE_URL = f'{CONFIG.API.URL}:{CONFIG.API.PORT}'
 class HTTPResponse:
     body: dict[str, Any]
     headers: CIMultiDictProxy[str]
+    cookies: dict[str, Any]
     status: int
 
 
@@ -49,14 +50,21 @@ async def _make_request(
     request_method: str,
     rest_method: str,
     params: dict[str, Any] | None = None,
-    json: dict[str, Any] | None = None
+    json: dict[str, Any] | None = None,
+    cookies: dict[str, Any] | None = None,
 ):
     params = params or {}
     json = json or {}
+    cookies = cookies or {}
     url = SERVICE_URL + f'{CONFIG.API.PATH}/{CONFIG.API.VERSION}/' + rest_method
     
-    async with getattr(session, request_method.lower())(url, params=params, json=json) as response:
-        return HTTPResponse(body=await response.json(), headers=response.headers, status=response.status,)
+    async with getattr(session, request_method.lower())(url, params=params, json=json, cookies=cookies) as response:
+        return HTTPResponse(
+            body=await response.json(),
+            headers=response.headers,
+            cookies={k: v.value for k,v in session.cookie_jar.filter_cookies(SERVICE_URL).items()},
+            status=response.status,
+        )
 
 
 @pytest_asyncio.fixture
@@ -66,29 +74,22 @@ def make_request():
         request_method: str,
         rest_method: str,
         params: dict[str, Any] | None = None,
-        json: dict[str, Any] | None = None
+        json: dict[str, Any] | None = None,
+        cookies: dict[str, Any] | None = None,
     ) -> HTTPResponse:
         
         session = aiohttp.ClientSession()
-        response = await _make_request(session, request_method, rest_method, params, json)
+        response = await _make_request(
+            session,
+            request_method,
+            rest_method,
+            params,
+            json,
+            cookies
+        )
         await session.close()
 
         return response
-
-    return inner
-
-
-@pytest_asyncio.fixture
-def make_request_context(session):
-
-    async def inner(
-        request_method: str,
-        rest_method: str,
-        params: dict[str, Any] | None = None,
-        json: dict[str, Any] | None = None
-    ) -> HTTPResponse:
-        
-        return await _make_request(session, request_method, rest_method, params, json)
 
     return inner
 
@@ -120,7 +121,7 @@ def event_loop():
     loop.close()
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest_asyncio.fixture(scope='function')
 async def generate_users(sqlite_client):
     user_dg = UserDataGenerator(conn=sqlite_client)
 
@@ -147,7 +148,7 @@ async def generate_user_frames(sqlite_client):
     await user_frame_dg.clean()
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest_asyncio.fixture(scope='function')
 async def generate_user_sessions(sqlite_client):
     user_session_dg = UserSessionDataGenerator(conn=sqlite_client)
 

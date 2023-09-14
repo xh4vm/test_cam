@@ -8,7 +8,7 @@ from ..utils.responses.user import RegistrationResponse
 pytestmark = pytest.mark.asyncio
 
 
-async def test_user_registration_success(sqlite_get_request, make_request):
+async def test_user_registration_success(generate_users, sqlite_get_request, make_request):
     user_email = 'new-user@test.ru'
     user = FakeUser(email=user_email, password='test123!@#')
     
@@ -27,16 +27,15 @@ async def test_user_registration_success(sqlite_get_request, make_request):
 
 
 async def test_user_registration_already_exists(generate_users, sqlite_get_request, make_request):
-    user_email = 'user1@test.ru'
-    user = FakeUser(email=user_email, password='test123!@#')
+    user = generate_users[0]
     
-    user_data = await sqlite_get_request(model=FakeUser, table='user', email=user_email)
+    user_data = await sqlite_get_request(model=FakeUser, table='user', email=user.email)
     
     assert len(user_data) == 1
 
     response = await make_request('POST', 'user/registration', json=user.request_data())
 
-    user_data = await sqlite_get_request(model=FakeUser, table='user', email=user_email)
+    user_data = await sqlite_get_request(model=FakeUser, table='user', email=user.email)
 
     assert len(user_data) == 1
 
