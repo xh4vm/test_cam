@@ -22,3 +22,12 @@ class FakeFrame(BaseModel):
     contributors: list[int] = Field(
         default_factory=lambda: [randint(1, 100) for i in range(randint(1, 10))]
     )
+
+    def request_data(self):
+        return {
+            "cam_id": self.cam_id,
+            "VideoColor": self.VideoColor,
+            "TimeSection": self.TimeSection,
+            "ChannelNo": self.ChannelNo,
+            "ConfigNo": self.ConfigNo,
+        }

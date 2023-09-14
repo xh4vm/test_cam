@@ -19,6 +19,8 @@ class UserSerializer(ModelSerializer):
         except ValidationError as error:
             raise SerializerValidationError(error.messages)
 
+        return password
+
     class Meta:
         model = User
         fields = (
