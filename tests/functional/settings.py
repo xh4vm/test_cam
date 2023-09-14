@@ -15,7 +15,7 @@ class ApiSettings(BaseSettings):
 
 class DBSettings(BaseSettings):
     BASE: str
-    
+
     class Config:
         env_prefix = "TEST_DB_"
 

@@ -98,3 +98,8 @@ data-gen:
 tests:
 	$(call log,Run tests)
 	docker-compose up tests
+
+.PHONY: black check
+black:
+	$(call log,Run black linter)
+	poetry run black --check ./

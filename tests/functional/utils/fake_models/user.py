@@ -11,15 +11,12 @@ class FakeUser(FakeIDMixin, FakeTimestampMixin):
 
     @classmethod
     def main_keys(cls) -> list[str]:
-        return ['email']
+        return ["email"]
 
     def dict(self, *args, **kwargs) -> dict[str, Any]:
         data = super().dict(*args, **kwargs)
-        data['password'] = hash_password(self.password)
+        data["password"] = hash_password(self.password)
         return data
 
     def request_data(self):
-        return {
-            'email': self.email,
-            'password': self.password
-        }
+        return {"email": self.email, "password": self.password}

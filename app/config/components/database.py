@@ -11,6 +11,4 @@ DATABASES_AVAILABLE = {
     },
 }
 
-DATABASES = {
-    "default": DATABASES_AVAILABLE[os.environ.get("PROFILE", "PROD").upper()]
-}
+DATABASES = {"default": DATABASES_AVAILABLE[os.environ.get("PROFILE", "PROD").upper()]}
