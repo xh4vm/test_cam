@@ -24,12 +24,11 @@ class BaseSqliteDataGenerator(BaseDataGenerator):
         self.conn: aiosqlite.Connection = conn
         self.chunk_size: int = chunk_size
 
-
     async def load(self):
         fake_data: list[type] = []
         data: list[type] = []
 
-        with open(f'{CONFIG.BASE_DIR}/testdata/{self.table}.json', 'r') as fd:
+        with open(f"{CONFIG.BASE_DIR}/testdata/{self.table}.json", "r") as fd:
             fake_data = json.load(fd)
 
         for elem in fake_data:
@@ -39,21 +38,23 @@ class BaseSqliteDataGenerator(BaseDataGenerator):
         await self._save_data(data=data)
 
         self.data = data
-        
+
         return data
 
-
     async def clean(self):
-        query = f'DELETE FROM {self.table}'
-        
-        async with self.conn.cursor() as cursor: 
+        query = f"DELETE FROM {self.table}"
+
+        async with self.conn.cursor() as cursor:
             await cursor.execute(query)
-        
+
         await self.conn.commit()
 
-
-    def _get_values_statement(self, data: type, fields: list[str] | None = None) -> tuple[Any]:
-        fields: list[str] = fields or [field for field in self.fake_model.__fields__.keys()]
+    def _get_values_statement(
+        self, data: type, fields: list[str] | None = None
+    ) -> tuple[Any]:
+        fields: list[str] = fields or [
+            field for field in self.fake_model.__fields__.keys()
+        ]
 
         try:
             data_as_dict: dict[str, Any] = data.dict()
@@ -61,20 +62,21 @@ class BaseSqliteDataGenerator(BaseDataGenerator):
             logger.error("Oops")
         return tuple(data_as_dict[key] for key in fields)
 
- 
     async def _save_data(self, data: dict[str, Any]) -> None:
-        into_statement: list[str] = [field for field in self.fake_model.__fields__.keys()]
+        into_statement: list[str] = [
+            field for field in self.fake_model.__fields__.keys()
+        ]
         values = (self._get_values_statement(data=elem) for elem in data)
-        
+
         insert_query: str = (
-            f'INSERT INTO {self.table} '
+            f"INSERT INTO {self.table} "
             f'({", ".join(into_statement)}) '
             f'VALUES ({", ".join(["?" for i in range(len(into_statement))])})'
         )
 
-        async with self.conn.cursor() as cursor: 
+        async with self.conn.cursor() as cursor:
             await cursor.executemany(insert_query, values)
 
         await self.conn.commit()
 
-        logger.debug(f'Success multiple insert {self.table} ({len(self.data)} objects)')
+        logger.debug(f"Success multiple insert {self.table} ({len(self.data)} objects)")

@@ -3,5 +3,5 @@ from .base import BaseSqliteDataGenerator
 
 
 class FrameDataGenerator(BaseSqliteDataGenerator):
-    table = 'frame'
+    table = "frame"
     fake_model = FakeFrame

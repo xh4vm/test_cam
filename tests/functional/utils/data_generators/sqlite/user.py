@@ -3,5 +3,5 @@ from .base import BaseSqliteDataGenerator
 
 
 class UserDataGenerator(BaseSqliteDataGenerator):
-    table = 'user'
+    table = "user"
     fake_model = FakeUser
