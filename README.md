@@ -50,3 +50,6 @@ http://localhost/api/swagger
 
 ## Тестирование
 `make tests`
+
+## Black linter
+`make black`
